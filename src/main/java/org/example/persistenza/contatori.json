@@ -1,9 +1,0 @@
-{
-  "contatori": [
-    {
-      "dataLettura": "2019-01-01",
-      "matricolaContatore": "123456789",
-      "valoreLettura": 123456789
-    }
-  ]
-}

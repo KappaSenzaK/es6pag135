@@ -1,11 +1,17 @@
 package org.example.server;
 
 import com.google.gson.Gson;
-import org.example.shared.Contatore;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.Random;
+
+import org.example.model.Contatore;
+import org.example.persistenza.FileHelper;
+import org.example.shared.ClientMessage;
+import org.example.shared.Codici;
+import org.example.shared.ServerMessage;
 
 public class ClientHandler extends Thread{
     private Socket socket;
@@ -22,13 +28,17 @@ public class ClientHandler extends Thread{
         try{
             out = new DataOutputStream(socket.getOutputStream());
             in = new DataInputStream(socket.getInputStream());
-            Contatore contatore = gson.fromJson(in.readUTF(), Contatore.class);
-            System.out.println(contatore);
-
-
-
+            Random random = new Random();
+            int matricola = random.nextInt(1000);
+            out.writeUTF(gson.toJson(new ServerMessage(Codici.CODICE_AREA.getCodice(), matricola)));
             out.flush();
-            socket.close();
+
+            ClientMessage clientMessage = gson.fromJson(in.readUTF(), ClientMessage.class);
+            System.out.println("Valore: " + clientMessage.getValoreCorrente());
+
+            Contatore contatore = new Contatore(matricola, Integer.parseInt(clientMessage.getValoreCorrente()));
+            FileHelper.INSTANCE.salvaContatore(contatore);
+            System.out.println("Contatore salvato");
         }
         catch(Exception e){
             e.printStackTrace();

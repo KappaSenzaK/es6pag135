@@ -1,4 +1,4 @@
-package org.example.shared;
+package org.example.model;
 
 public class Contatore {
     private int matricola;
